@@ -1,8 +1,47 @@
 import type { NextAuthConfig } from "next-auth"
 import Google from "next-auth/providers/google"
+import { NextResponse } from "next/server";
 
 export default {
     providers: [
         Google
     ],
+    callbacks: {
+        async authorized({ request, auth }): Promise<NextResponse> {
+            const unprotectedUrls = [
+                '/',
+                '/error',
+                '/_not-found/page',
+                '/favicon.ico'
+            ];
+
+            if (request.nextUrl.pathname in unprotectedUrls) {
+                return NextResponse.next();
+            }
+
+            const protectedUrlGroups = [
+                '/profile',
+                '/api/accounts'
+            ];
+
+            for (const url of protectedUrlGroups) {
+                if (request.nextUrl.pathname.startsWith(url)) {
+                    if (auth === null || auth.user === undefined) {
+                        return NextResponse.redirect(new URL('/api/auth/signin', request.nextUrl.origin));
+                    }
+
+                    break;
+                }
+            }
+
+            if (request.nextUrl.pathname.startsWith("/api/accounts/")) {
+                const targetUser = request.nextUrl.pathname.substring(request.nextUrl.pathname.lastIndexOf('/') + 1);
+                if (targetUser !== auth!.user!.id) {
+                    return NextResponse.json({ message: "Cannot get accounts of unowned user." }, { status: 401 })
+                }
+            }
+
+            return NextResponse.next();
+        }
+    }
 } satisfies NextAuthConfig;
