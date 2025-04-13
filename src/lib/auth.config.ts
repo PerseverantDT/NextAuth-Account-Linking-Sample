@@ -49,6 +49,10 @@ export default {
                 }
             }
 
+            if (request.nextUrl.basePath === '/' && auth !== null && auth.user !== undefined) {
+                return NextResponse.redirect(new URL('/profile', request.nextUrl.origin));
+            }
+
             if (request.nextUrl.pathname.startsWith("/api/accounts/")) {
                 const targetUser = request.nextUrl.pathname.substring(request.nextUrl.pathname.lastIndexOf('/') + 1);
                 if (targetUser !== auth!.user.id) {
