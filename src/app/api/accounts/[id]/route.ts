@@ -10,11 +10,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{id: s
     const database = connectMongoClient().db();
     const accounts = await database.collection('accounts').find<Account>({ userId: new ObjectId(id) }).toArray();
 
-    return NextResponse.json(accounts.map((account) => {
+    const toReturn = accounts.map((account) => {
         return {
             userId: account.userId,
             provider: account.provider,
             accountId: account.providerAccountId
         };
-    }));
+    })
+
+    return NextResponse.json(toReturn);
 }
