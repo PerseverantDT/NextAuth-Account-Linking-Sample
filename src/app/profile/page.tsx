@@ -7,7 +7,6 @@ import { Account } from "next-auth"; // Assuming Account type is relevant for di
 import { LuUser, LuMail, LuLink2 } from 'react-icons/lu'
 import { SiGithub, SiGitlab, SiGoogle } from "react-icons/si";
 import { JSX } from "react";
-import Image from "next/image";
 import { FaSignOutAlt } from "react-icons/fa";
 
 export default async function Profile() {
@@ -70,18 +69,9 @@ export default async function Profile() {
                 {/* User Info Section */}
                 <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-md">
                     <h2 className="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Session Information</h2>
-                    {
-                        !session.user.image 
-                            ? <></>
-                            : <Image
-                                className="w-24 h-24 rounded-full object-cover"
-                                src={session.user.image}
-                                alt="Profile image"
-                            />
-                    }
                     <div className="flex items-center gap-2 mb-1">
                         <LuUser className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <strong>ID:</strong> <span className="text-sm font-mono text-gray-600 dark:text-gray-400">{`${session.user.id.slice(0, 3)}${session.user.id.slice(3).replaceAll(/.*/g, '*')}`}</span>
+                        <strong>ID:</strong> <span className="text-sm font-mono text-gray-600 dark:text-gray-400">{`${session.user.id.slice(0, 3)}${session.user.id.slice(3).replaceAll(/./g, '*')}`}</span>
                     </div>
                     {session.user.name && (
                         <div className="flex items-center gap-2 mb-1">
