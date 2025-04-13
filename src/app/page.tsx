@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FaSignInAlt } from "react-icons/fa";
+import { SiGithub } from "react-icons/si";
 
 export default function Home() {
   return (
@@ -23,7 +25,7 @@ export default function Home() {
             href="/api/auth/signin"
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-center shadow-sm"
           >
-            Login / Sign Up
+            <FaSignInAlt className='w-4 h-4'/> Login / Sign Up
           </Link>
           <Link
             href="https://github.com/PerseverantDT/NextAuth-Account-Linking-Sample"
@@ -31,7 +33,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="px-6 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition-colors text-center shadow-sm"
           >
-            View Repository
+            <SiGithub className='w-4 h-4'/> View Repository
           </Link>
         </div>
       </main>

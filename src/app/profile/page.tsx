@@ -5,8 +5,10 @@ import { connectMongoClient } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { Account } from "next-auth"; // Assuming Account type is relevant for display
 import { LuUser, LuMail, LuLink2 } from 'react-icons/lu'
-import { SiGithub, SiGitlab, SiGmail } from "react-icons/si";
+import { SiGithub, SiGitlab, SiGoogle } from "react-icons/si";
 import { JSX } from "react";
+import Image from "next/image";
+import { FaSignOutAlt } from "react-icons/fa";
 
 export default async function Profile() {
     const session = await auth();
@@ -36,7 +38,7 @@ export default async function Profile() {
             let icon: JSX.Element;
             switch (account.provider) {
                 case 'google':
-                    icon = (<SiGmail/>);
+                    icon = (<SiGoogle/>);
                     break;
                 case 'github':
                     icon = (<SiGithub/>);
@@ -68,20 +70,29 @@ export default async function Profile() {
                 {/* User Info Section */}
                 <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-md">
                     <h2 className="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Session Information</h2>
+                    {
+                        !session.user.image 
+                            ? <></>
+                            : <Image
+                                className="w-24 h-24 rounded-full object-cover"
+                                src={session.user.image}
+                                alt="Profile image"
+                            />
+                    }
                     <div className="flex items-center gap-2 mb-1">
                         <LuUser className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <strong>ID:</strong> <span className="text-sm font-mono text-gray-600 dark:text-gray-400">{session.user.id}</span>
+                        <strong>ID:</strong> <span className="text-sm font-mono text-gray-600 dark:text-gray-400">{`${session.user.id.slice(0, 3)}${session.user.id.slice(3).replaceAll(/.*/g, '*')}`}</span>
                     </div>
                     {session.user.name && (
                         <div className="flex items-center gap-2 mb-1">
                             <LuUser className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                            <strong>Name:</strong> {session.user.name}
+                            <strong>Name:</strong> {session.user.name ?? (<span className="text-sm text-gray-600 dark:text-gray-400">Not found</span>)}
                         </div>
                     )}
                     {session.user.email && (
                         <div className="flex items-center gap-2">
                             <LuMail className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                            <strong>Email:</strong> {session.user.email}
+                            <strong>Email:</strong> {session.user.email ?? (<span className="text-sm text-gray-600 dark:text-gray-400">Not found</span>)}
                         </div>
                     )}
                 </div>
@@ -128,7 +139,7 @@ export default async function Profile() {
                         href="/api/auth/signout"
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-center shadow-sm sm:ml-auto" // Pushes sign out to the right on larger screens
                     >
-                        <LuLink2 className="w-4 h-4" /> Sign Out
+                        <FaSignOutAlt className="w-4 h-4" /> Sign Out
                     </Link>
                 </div>
             </div>
