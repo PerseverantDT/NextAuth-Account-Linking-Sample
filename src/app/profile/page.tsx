@@ -46,6 +46,14 @@ export default async function Profile()
                 >
                     Sign Out
                 </Link>
+                <Link
+                    href="https://github.com/PerseverantDT/NextAuth-Account-Linking-Sample"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+                >
+                    View Repository
+                </Link>
             </div>
         </div>
     )
