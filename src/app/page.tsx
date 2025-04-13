@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 import { SiGithub } from "react-icons/si";
@@ -7,16 +6,6 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
       <main className="flex flex-col gap-8 p-8 max-w-lg w-full bg-white dark:bg-gray-800 shadow-md rounded-lg">
-        <div className="flex justify-center">
-          <Image
-            className="dark:invert"
-            src="/next.svg"
-            alt="Next.js logo"
-            width={180}
-            height={38}
-            priority
-          />
-        </div>
         <p className="text-center text-gray-700 dark:text-gray-300">
           This sample web app aims to show how one handles linking multiple accounts to a single user using NextAuth.js.
         </p>
