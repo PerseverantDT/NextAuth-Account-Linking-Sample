@@ -1,11 +1,15 @@
 import type { NextAuthConfig, Session } from "next-auth"
 import { JWT } from "next-auth/jwt";
+import GitHub from "next-auth/providers/github";
+import GitLab from "next-auth/providers/gitlab";
 import Google from "next-auth/providers/google"
 import { NextResponse } from "next/server";
 
 export default {
     providers: [
-        Google
+        Google,
+        GitHub,
+        GitLab
     ],
     callbacks: {
         async jwt({ token, user }): Promise<JWT> {
