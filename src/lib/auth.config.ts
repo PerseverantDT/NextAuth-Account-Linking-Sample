@@ -1,4 +1,5 @@
-import type { NextAuthConfig } from "next-auth"
+import type { NextAuthConfig, Session } from "next-auth"
+import { JWT } from "next-auth/jwt";
 import Google from "next-auth/providers/google"
 import { NextResponse } from "next/server";
 
@@ -7,6 +8,16 @@ export default {
         Google
     ],
     callbacks: {
+        async jwt({ token, user }): Promise<JWT> {
+            if (user) {
+                token.id = user.id!;
+            }
+            return token;
+        },
+        async session({ session, token }): Promise<Session> {
+            session.user.id = token.id;
+            return session;
+        },
         async authorized({ request, auth }): Promise<NextResponse> {
             const unprotectedUrls = [
                 '/',
@@ -36,7 +47,7 @@ export default {
 
             if (request.nextUrl.pathname.startsWith("/api/accounts/")) {
                 const targetUser = request.nextUrl.pathname.substring(request.nextUrl.pathname.lastIndexOf('/') + 1);
-                if (targetUser !== auth!.user!.id) {
+                if (targetUser !== auth!.user.id) {
                     return NextResponse.json({ message: "Cannot get accounts of unowned user." }, { status: 401 })
                 }
             }
