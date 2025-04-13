@@ -1,6 +1,10 @@
 import { auth } from "@/lib/auth";
 import Link from "next/link";
 
+import { connectMongoClient } from "@/lib/db";
+import { ObjectId } from "mongodb";
+import { Account } from "next-auth"; // Assuming Account type is relevant for display
+
 export default async function Profile()
 {
     const session = await auth();
@@ -8,14 +12,26 @@ export default async function Profile()
         return <div>Not authenticated.</div>
     }
 
-    // Fetch the accounts linked to the user
-    const accountsResponse = await fetch(`${process.env.NEXT_PUBLIC_URL || ''}/api/accounts/${session.user.id}`);
-    const accounts = await accountsResponse.json();
+    let fetchedAccounts: Partial<Account>[] = [];
+    try {
+        const database = connectMongoClient().db();
+        const accountsFromDb = await database.collection('accounts').find<Account>({ userId: new ObjectId(session.user.id) }).toArray();
+
+        fetchedAccounts = accountsFromDb.map((account) => {
+            return {
+                provider: account.provider,
+                providerAccountId: `${account.providerAccountId.slice(0, 5)}${account.providerAccountId.slice(5).replaceAll(/.*/g, '*')}`,
+            };
+        });
+    } catch (error) {
+        console.error("Error fetching accounts directly in profile page:", error);
+        fetchedAccounts = [{ provider: "Error fetching accounts" }];
+    }
 
     return (
         <div>
             <pre>
-                {JSON.stringify({session, accounts}, null, 2)}
+                {JSON.stringify({ session, accounts: fetchedAccounts }, null, 2)}
             </pre>
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
                 <Link
